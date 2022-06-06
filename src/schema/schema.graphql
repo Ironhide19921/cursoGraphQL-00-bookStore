@@ -2,6 +2,85 @@
 
 type Query {
   hello: String!
-  helloWithName(name: String): String
-  peopleNumber: Int
+  helloWithName(name: String): String!
+  peopleNumber: Int!
+  #Listas de los elementos
+  booksList: Result!
+  peopleList: Result!
+  #Elementos seleccionados
+  book(id: ID!): Result!
+  people(id: ID!): Result!
+}
+
+type Mutation {
+  addBook(book: BookInput!): Result!
+  addPeople(people: PeopleInput!): Result!
+  updateBook(book: BookInput!): Result!
+  updatePeople(people: PeopleInput!): Result!
+  deleteBook(id: ID!): Result!
+  deletePeople(id: ID!): Result!
+}
+
+input BookInput {
+  id: ID
+  title: String!
+  isbn: String!
+  pageCount: Int!
+  publishedDate: String
+  thumbnailUrl: String
+  shortDescription: String
+  longDescription: String
+  status: StatusEnum = UNPUBLISH
+  "Autores que han escrito el libro"
+  authors: [String!]!
+}
+input PeopleInput {
+  id: ID
+  name: String!
+  email: String!
+  website: String
+  github: String
+  twitter: String
+  books: [String]
+}
+
+enum StatusEnum {
+  PUBLISH
+  UNPUBLISH
+}
+
+union Data = Book | People
+
+#Información de los libros
+type Book {
+  id: ID!
+  title: String!
+  isbn: String!
+  pageCount: Int!
+  publishedDate: String
+  thumbnailUrl: String
+  shortDescription: String
+  longDescription: String
+  status: String
+  authors: [String!]!
+  byPeoplesBuy: [People]
+}
+type People {
+  id: ID!
+  name: String!
+  email: String!
+  website: String
+  github: String
+  twitter: String
+  books: [String!]!
+  #Libros que ha comprado esta persona
+  booksBuy: [Book]
+}
+
+# Definir resultado con más detalle
+type Result {
+  status: Boolean!
+  message: String!
+  list: [Data!]
+  item: Data
 }

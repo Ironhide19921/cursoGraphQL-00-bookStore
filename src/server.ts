@@ -1,9 +1,9 @@
-import { makeExecutableSchema } from "@graphql-tools/schema";
 import { ApolloServer, gql } from "apollo-server-express";
 import compression from "compression";
 import express, { Application } from "express";
 import { GraphQLSchema } from "graphql";
 import { Server, createServer } from "http";
+import depthLimit from "graphql-depth-limit";
 
 class GraphQLServer {
   //Propiedades
@@ -38,6 +38,7 @@ class GraphQLServer {
     const apolloServer = new ApolloServer({
       schema: this.schema,
       introspection: true,
+      validationRules: [depthLimit(4)],
     });
 
     await apolloServer.start();
